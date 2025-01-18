@@ -1,0 +1,30 @@
+#!/bin/bash
+
+pokemons=("bulbasaur" "ivysaur" "venusaur" "charmander" "charmeleon")
+
+echo "name,height,weight" > summary.csv
+for pokemon in ${pokemons[@]}
+do
+    read -r name height weight <<< "$(jq -r '"\(.name) \(.height) \(.weight)"' "${pokemon}.json")"
+    echo "${name},${height},${weight}" >> "summary.csv"
+done
+
+awk -F, '
+BEGIN {
+    total_weight=0
+    total_height=0
+    count=0
+}
+NR > 1 {
+    total_weight += $3
+    total_height += $2
+    count++
+}
+END {
+    average_height = total_height / count
+    average_weight = total_weight / count
+
+    printf "Average weight: %.2f\n", average_weight
+    printf "Average height: %.2f\n", average_height
+}
+' summary.csv
