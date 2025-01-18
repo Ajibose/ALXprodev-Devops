@@ -1,0 +1,15 @@
+#!/bin/bash                                                                        
+response=$(curl -s "https://pokeapi.co/api/v2/pokemon/1/")
+
+# Use jq with proper syntax and clear separation
+read -r name types weight height <<<$(echo "$response" | jq -r '
+  .name + " " + 
+  ([.types[].type.name] | join("and")) + " " + 
+  (.weight | tostring) + " " + 
+  (.height | tostring)
+')
+types=$(echo $types | sed 's/and/ and /g')
+name=$(echo "$name" | sed 's/^[a-z]/\U&/')
+
+echo "$name is of type(s) $types, weighs ${weight}kg and is ${height}m tall"
+
