@@ -1,0 +1,10 @@
+#!/bin/bash
+
+BASE_URI="https://pokeapi.co/api/v2/pokemon/"
+pokemons=("bulbasaur" "ivysaur" "venusaur" "charmander" "charmeleon")
+
+for pokemon in ${pokemons[@]}
+do
+    curl "${BASE_URI}${pokemon}" | jq . > "${pokemon}.json"
+    sleep 3
+done
