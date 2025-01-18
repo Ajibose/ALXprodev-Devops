@@ -1,0 +1,7 @@
+#!/bin/bash
+
+E_CONN_ERR=7
+STDOUT_FILE='data.json'
+STDERR_FILE='errors.txt'
+
+curl https://pokeapi.co/api/v2/pokemon/2/ > "$STDOUT_FILE" 2> "$STDERR_FILE"
