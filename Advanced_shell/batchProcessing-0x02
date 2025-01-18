@@ -18,7 +18,7 @@ fetch() {
             success=1
             break
         else
-            if [ $attempt -lt $max_attempts ]; then
+            if [ $attempt -lt 3 ]; then
                 sleep 3
             fi
         fi
