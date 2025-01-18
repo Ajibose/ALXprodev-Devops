@@ -3,8 +3,35 @@
 BASE_URI="https://pokeapi.co/api/v2/pokemon/"
 pokemons=("bulbasaur" "ivysaur" "venusaur" "charmander" "charmeleon")
 
+fetch() {
+    local pokemon=$1
+    local attempt=0
+    local success=0
+
+    while [ $attempt -lt 3 ]
+    do
+        ((attempt++))
+        response=$(curl -s -w "%{http_code}" -o "${pokemon}.json" "${BASE_URI}${pokemon}")
+
+        if [ $response -eq 200 ]
+        then
+            success=1
+            break
+        else
+            if [ $attempt -lt $max_attempts ]; then
+                sleep 3
+            fi
+        fi
+    done
+
+    if [ $success -eq 0 ]
+    then
+        echo "Failed to fetch data for $pokemon after 3 attempts."
+    fi
+}
+
 for pokemon in ${pokemons[@]}
 do
-    curl "${BASE_URI}${pokemon}" | jq . > "${pokemon}.json"
-    sleep 3
+    fetch $pokemon
+    sleep 1
 done
